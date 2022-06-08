@@ -1,0 +1,28 @@
+<launch> 
+ 
+  <node pkg="giskardpy" type="joint_trajectory_splitter.py" name="joint_trajectory_splitter" output="screen"> 
+    <rosparam param="state_topics"> 
+      - /whole_body_controller/body/state 
+    </rosparam> 
+    <rosparam param="client_topics"> 
+      - /whole_body_controller/body/follow_joint_trajectory 
+    </rosparam> 
+  </node> 
+  
+  <node pkg="giskardpy" type="giskard_trees.py" name="giskard" output="screen"> 
+    <param name="config" value="$(find giskardpy)/config/default.yaml" /> 
+    <!-- <remap from="/whole_body_controller/follow_joint_trajectory/" to="/whole_body_controller/follow_joint_trajectory/base/"/> --> 
+    <!-- <remap from="~state" to="/whole_body_controller/base/state"/> --> 
+  </node> 
+ 
+  <node pkg="giskardpy" type="interactive_marker.py" name="giskard_interactive_marker" output="screen"> 
+    <rosparam param="enable_self_collision">False</rosparam> 
+    <rosparam param="interactive_marker_chains"> 
+      - [odom_combined, r_gripper_tool_frame] 
+      - [odom_combined, l_gripper_tool_frame] 
+      - [odom_combined, base_footprint] 
+      - [odom_combined, head_mount_kinect2_rgb_optical_frame] 
+    </rosparam> 
+  </node> 
+  
+</launch>
