@@ -1,9 +1,18 @@
-from giskardpy.configs.data_types import ControlModes
+from typing import Optional
+
+from giskardpy.configs.data_types import ControlModes, SupportedQPSolver
 from giskardpy.configs.default_giskard import Giskard
 from giskardpy.my_types import Derivatives
 
+class Avatar_Base(Giskard):
+    def __init__(self, root_link_name: Optional[str] = None):
+        super().__init__(root_link_name=root_link_name)
+        self.set_qp_solver(SupportedQPSolver.qpalm)
+        self.configure_MaxTrajectoryLength(length=60)
+        # Add self collision matrix and external collision settings as needed
+        
 
-class Avatar_StandAlone(Giskard):
+class Avatar_StandAlone(Avatar_Base):
     def __init__(self):
         self.add_robot_from_parameter_server(add_drive_joint_to_group=False)
         super().__init__('map')
@@ -81,5 +90,36 @@ class Avatar_StandAlone(Giskard):
                                       Derivatives.velocity: 0.2,
                                       Derivatives.acceleration: 1,
                                       Derivatives.jerk: 5
-                                  }
-                                  )
+                                  })  
+
+""" class Avatar_Unreal(Giskard):
+    def __init__(self, root_link_name: Optional[str] = None):
+        super().__init__(root_link_name=root_link_name)
+        # self.set_collision_checker(CollisionCheckerLib.none)
+        self.set_qp_solver(SupportedQPSolver.qpalm)
+        self.add_robot_from_parameter_server()
+        self.add_sync_tf_frame('map', 'odom_combined')
+        self.add_omni_drive_joint(name='brumbrum',
+                                  parent_link_name='odom_combined',
+                                  child_link_name='root',
+                                  translation_limits={
+                                      Derivatives.velocity: 0.4,
+                                      Derivatives.acceleration: 1,
+                                      Derivatives.jerk: 5,
+                                  },
+                                  rotation_limits={
+                                      Derivatives.velocity: 0.2,
+                                      Derivatives.acceleration: 1,
+                                      Derivatives.jerk: 5
+                                  },
+                                  odometry_topic='/base_odometry/odom')
+        fill_velocity_values = False
+        self.add_follow_joint_trajectory_server(namespace='/whole_body_controller/follow_joint_trajectory',
+                                                state_topic='/whole_body_controller/state',
+                                                fill_velocity_values=fill_velocity_values)
+        self.add_base_cmd_velocity(cmd_vel_topic='/base_controller/command',
+                                   track_only_velocity=True)
+        self.overwrite_external_collision_avoidance('brumbrum',
+                                                    number_of_repeller=2,
+                                                    soft_threshold=0.2,
+                                                    hard_threshold=0.1) """
