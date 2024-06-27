@@ -11,7 +11,6 @@ class Avatar_Base(Giskard):
         self.configure_MaxTrajectoryLength(length=60)
         # Add self collision matrix and external collision settings as needed
         
-
 class Avatar_StandAlone(Avatar_Base):
     def __init__(self):
         self.add_robot_from_parameter_server(add_drive_joint_to_group=False)
@@ -92,16 +91,14 @@ class Avatar_StandAlone(Avatar_Base):
                                       Derivatives.jerk: 5
                                   })  
 
-""" class Avatar_Unreal(Giskard):
-    def __init__(self, root_link_name: Optional[str] = None):
-        super().__init__(root_link_name=root_link_name)
-        # self.set_collision_checker(CollisionCheckerLib.none)
-        self.set_qp_solver(SupportedQPSolver.qpalm)
+class Avatar_Unreal(Avatar_Base):
+    def __init__(self):
         self.add_robot_from_parameter_server()
+        super().__init__()
         self.add_sync_tf_frame('map', 'odom_combined')
         self.add_omni_drive_joint(name='brumbrum',
                                   parent_link_name='odom_combined',
-                                  child_link_name='root',
+                                  child_link_name='base_footprint',
                                   translation_limits={
                                       Derivatives.velocity: 0.4,
                                       Derivatives.acceleration: 1,
@@ -122,4 +119,4 @@ class Avatar_StandAlone(Avatar_Base):
         self.overwrite_external_collision_avoidance('brumbrum',
                                                     number_of_repeller=2,
                                                     soft_threshold=0.2,
-                                                    hard_threshold=0.1) """
+                                                    hard_threshold=0.1) 
